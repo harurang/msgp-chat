@@ -86,7 +86,7 @@ public class CLIUserAgent implements UserAgent {
      */
     public void join(String userName, String group) {
         response = textMsgpClient.join(userName, group);
-        // If userName is part of a group
+        // If user is already part of a group
         if (response.startsWith("msgp 201"))
             System.out.println(userName + " is already a member of " + group);
         else {
@@ -102,12 +102,10 @@ public class CLIUserAgent implements UserAgent {
      */
     public void leave(String userName, String group) {
         response = textMsgpClient.leave(userName, group);
-        if (response.startsWith("msgp 200")) {
-            System.out.println(userName + " is no longer part of " + group);
-        } else if (response.startsWith("msgp 201")) {
+        if (response.startsWith("msgp 201")) {
             System.out.println(userName + " is not a member of the group");
         } else if (response.startsWith("msgp 400")) {
-            System.out.println(group + " does not exist");
+            System.out.println(userName + " is not a member because the group does not exist.");
         }
     }
 
@@ -153,7 +151,7 @@ public class CLIUserAgent implements UserAgent {
     public void send(String[] parsedUserInput) {
         response = textMsgpClient.send(parsedUserInput, userName);
         if (response.startsWith("msgp 400")) {
-            System.out.println("One or more recipients do not exist.");
+            System.out.println("Recipient(s) do not exist.");
         }
     }
 

@@ -118,7 +118,7 @@ public class TextMsgpClient extends Thread implements MsgpClient {
             e.printStackTrace();
         } finally {
             if (response.startsWith("msg 400")) {
-                client.deliverError(response);
+                return null;
             } else {
                 // Split the response into group names using delimiter "\n" and save them to the array list
                 groups = new ArrayList<>(Arrays.asList(response.split("\n")));
@@ -145,9 +145,9 @@ public class TextMsgpClient extends Thread implements MsgpClient {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            // If the group is empty or does not exist
-            if (response.startsWith("msgp 201") || response.startsWith("msgp 400")) {
-                client.deliverError(response);
+            // If the group does not exist
+            if (response.startsWith("msgp 400")) {
+                client.deliverError(group + " does not exist.");
             } else {
                 // Split the response into user names using delimiter "\n" and save them to the array list
                 users = new ArrayList<>( Arrays.asList(response.split("\n")));
@@ -174,7 +174,7 @@ public class TextMsgpClient extends Thread implements MsgpClient {
             e.printStackTrace();
         } finally {
             if (response.startsWith("msgp 201") || response.startsWith("msgp 400"))
-                client.deliverError(response);
+                client.deliverError(group + " does not have any history.");
             else {
                 // Parse response so that each index is a message
                 String[] parsedResponse = response.split("\n\nmsgp send");
@@ -212,8 +212,7 @@ public class TextMsgpClient extends Thread implements MsgpClient {
         while (response.equals("")) {
             try {
                 Thread.sleep(20);
-            }
-            catch( InterruptedException ie) {
+            } catch( InterruptedException ie) {
                 ie.printStackTrace();
             }
         }
